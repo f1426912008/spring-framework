@@ -77,7 +77,7 @@ public abstract class BeanUtils {
 
 	private static final Set<Class<?>> unknownEditorTypes =
 			Collections.newSetFromMap(new ConcurrentReferenceHashMap<>(64));
-
+	// 基本数据类型的默认值
 	private static final Map<Class<?>, Object> DEFAULT_TYPE_VALUES = Map.of(
 			boolean.class, false,
 			byte.class, (byte) 0,
@@ -149,7 +149,7 @@ public abstract class BeanUtils {
 		catch (LinkageError err) {
 			throw new BeanInstantiationException(clazz, "Unresolvable class definition", err);
 		}
-		return instantiateClass(ctor);
+		return instantiateClass(ctor);		// 根据构造方法创建对象
 	}
 
 	/**
@@ -194,13 +194,13 @@ public abstract class BeanUtils {
 				int parameterCount = ctor.getParameterCount();
 				Assert.isTrue(args.length <= parameterCount, "Can't specify more arguments than constructor parameters");
 				if (parameterCount == 0) {
-					return ctor.newInstance();
+					return ctor.newInstance();		// 无参构造创建对象
 				}
-				Class<?>[] parameterTypes = ctor.getParameterTypes();
-				Object[] argsWithDefaultValues = new Object[args.length];
+				Class<?>[] parameterTypes = ctor.getParameterTypes();	// 入参的数组
+				Object[] argsWithDefaultValues = new Object[args.length];	// 入参的默认值
 				for (int i = 0 ; i < args.length; i++) {
 					if (args[i] == null) {
-						Class<?> parameterType = parameterTypes[i];
+						Class<?> parameterType = parameterTypes[i];		// 构造方法入参类型
 						argsWithDefaultValues[i] = (parameterType.isPrimitive() ? DEFAULT_TYPE_VALUES.get(parameterType) : null);
 					}
 					else {

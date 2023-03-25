@@ -310,7 +310,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		return loadBeanDefinitions(new EncodedResource(resource));
 	}
 
-	/**
+	/** 从指定的XML文件加载bean定义。
 	 * Load bean definitions from the specified XML file.
 	 * @param encodedResource the resource descriptor for the XML file,
 	 * allowing to specify an encoding to use for parsing the file
@@ -335,6 +335,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			if (encodedResource.getEncoding() != null) {
 				inputSource.setEncoding(encodedResource.getEncoding());
 			}
+			// xml到bean定义的解析，从指定的XML文件加载bean定义。
 			return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
 		}
 		catch (IOException ex) {
@@ -342,7 +343,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 					"IOException parsing XML document from " + encodedResource.getResource(), ex);
 		}
 		finally {
-			currentResources.remove(encodedResource);
+			currentResources.remove(encodedResource);	// 排除已解析完成的xml文件
 			if (currentResources.isEmpty()) {
 				this.resourcesCurrentlyBeingLoaded.remove();
 			}
@@ -388,7 +389,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
 		try {
 			Document doc = doLoadDocument(inputSource, resource);
-			int count = registerBeanDefinitions(doc, resource);
+			int count = registerBeanDefinitions(doc, resource);		// 解析xml为bean定义，返回解析的bean定义的个数
 			if (logger.isDebugEnabled()) {
 				logger.debug("Loaded " + count + " bean definitions from " + resource);
 			}
@@ -506,9 +507,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
-		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
-		int countBefore = getRegistry().getBeanDefinitionCount();
-		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();		// 创建bean定义Reader
+		int countBefore = getRegistry().getBeanDefinitionCount();	// bean定义集合长度的初始大小
+		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));		// 解析xml文档，注册bean定义
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 

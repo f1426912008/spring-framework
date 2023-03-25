@@ -37,7 +37,7 @@ public final class ParseState {
 	/**
 	 * Internal {@link ArrayDeque} storage.
 	 */
-	private final ArrayDeque<Entry> state;
+	private final ArrayDeque<Entry> state;		// 堆栈
 
 
 	/**

@@ -57,7 +57,7 @@ public abstract class BeanDefinitionReaderUtils {
 	public static AbstractBeanDefinition createBeanDefinition(
 			@Nullable String parentName, @Nullable String className, @Nullable ClassLoader classLoader) throws ClassNotFoundException {
 
-		GenericBeanDefinition bd = new GenericBeanDefinition();
+		GenericBeanDefinition bd = new GenericBeanDefinition();		// 通用bean定义类
 		bd.setParentName(parentName);
 		if (className != null) {
 			if (classLoader != null) {
@@ -160,7 +160,7 @@ public abstract class BeanDefinitionReaderUtils {
 			throws BeanDefinitionStoreException {
 
 		// Register bean definition under primary name.
-		String beanName = definitionHolder.getBeanName();
+		String beanName = definitionHolder.getBeanName();	// 在主名称下注册bean定义。
 		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
 
 		// Register aliases for bean name, if any.

@@ -61,7 +61,12 @@ final class PostProcessorRegistrationDelegate {
 	private PostProcessorRegistrationDelegate() {
 	}
 
-
+	/**
+	 * 调用bean工厂后置处理器
+	 *
+	 * @param beanFactory
+	 * @param beanFactoryPostProcessors
+	 */
 	public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
@@ -87,7 +92,7 @@ final class PostProcessorRegistrationDelegate {
 
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor registryProcessor) {
-					registryProcessor.postProcessBeanDefinitionRegistry(registry);
+					registryProcessor.postProcessBeanDefinitionRegistry(registry);		// 执行bean定义注册的后置处理器方法
 					registryProcessors.add(registryProcessor);
 				}
 				else {
@@ -110,6 +115,7 @@ final class PostProcessorRegistrationDelegate {
 					processedBeans.add(ppName);
 				}
 			}
+			// 排序处理器的执行顺序
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
 			registryProcessors.addAll(currentRegistryProcessors);
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry, beanFactory.getApplicationStartup());
@@ -146,6 +152,7 @@ final class PostProcessorRegistrationDelegate {
 				currentRegistryProcessors.clear();
 			}
 
+			// 反射调用后置处理器的方法
 			// Now, invoke the postProcessBeanFactory callback of all processors handled so far.
 			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
 			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);
@@ -317,6 +324,12 @@ final class PostProcessorRegistrationDelegate {
 		new MergedBeanDefinitionPostProcessorInvoker(beanFactory).invokeMergedBeanDefinitionPostProcessors();
 	}
 
+	/**
+	 * 排序后置处理器（常用 @Order 注解，指定Bean的顺序）
+	 *
+	 * @param postProcessors
+	 * @param beanFactory
+	 */
 	private static void sortPostProcessors(List<?> postProcessors, ConfigurableListableBeanFactory beanFactory) {
 		// Nothing to sort?
 		if (postProcessors.size() <= 1) {
@@ -329,6 +342,7 @@ final class PostProcessorRegistrationDelegate {
 		if (comparatorToUse == null) {
 			comparatorToUse = OrderComparator.INSTANCE;
 		}
+		// 按指定的排序规则排序
 		postProcessors.sort(comparatorToUse);
 	}
 

@@ -33,7 +33,7 @@ class DefaultApplicationStartup implements ApplicationStartup {
 
 	@Override
 	public DefaultStartupStep start(String name) {
-		return DEFAULT_STARTUP_STEP;
+		return DEFAULT_STARTUP_STEP;		// 返回默认的默认启动步骤
 	}
 
 

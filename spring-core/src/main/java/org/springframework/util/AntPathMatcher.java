@@ -167,7 +167,7 @@ public class AntPathMatcher implements PathMatcher {
 		this.stringMatcherCache.clear();
 	}
 
-
+	/** 路径是否匹配通配符： `*` 或 `?` 或 `{}`*/
 	@Override
 	public boolean isPattern(@Nullable String path) {
 		if (path == null) {

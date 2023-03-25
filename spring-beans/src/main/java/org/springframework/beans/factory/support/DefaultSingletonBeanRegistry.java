@@ -83,7 +83,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	/** Cache of early singleton objects: bean name to bean instance. */	// 二级缓存，早期的bean对象，未进行初始化赋值
 	private final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>(16);
 
-	/** Set of registered singletons, containing the bean names in registration order. */
+	/** Set of registered singletons, containing the bean names in registration order. */	// 已注册的单例对象，按注册顺序包含bean名称
 	private final Set<String> registeredSingletons = new LinkedHashSet<>(256);
 
 	/** Names of beans that are currently in creation. */
@@ -124,7 +124,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				throw new IllegalStateException("Could not register object [" + singletonObject +
 						"] under bean name '" + beanName + "': there is already object [" + oldObject + "] bound");
 			}
-			addSingleton(beanName, singletonObject);
+			addSingleton(beanName, singletonObject);	// 添加单例对象
 		}
 	}
 

@@ -179,7 +179,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	private ConstructorArgumentValues constructorArgumentValues;
 
 	@Nullable
-	private MutablePropertyValues propertyValues;
+	private MutablePropertyValues propertyValues;		// 属性
 
 	private MethodOverrides methodOverrides = new MethodOverrides();
 
@@ -1150,18 +1150,18 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 					"the factory method must create the concrete bean instance.");
 		}
 		if (hasBeanClass()) {
-			prepareMethodOverrides();
+			prepareMethodOverrides();	// 验证并准备为此bean定义的方法覆盖。检查是否存在具有指定名称的方法。
 		}
 	}
 
-	/**
+	/** 验证并准备为此bean定义的方法覆盖。检查是否存在具有指定名称的方法。
 	 * Validate and prepare the method overrides defined for this bean.
 	 * Checks for existence of a method with the specified name.
 	 * @throws BeanDefinitionValidationException in case of validation failure
 	 */
 	public void prepareMethodOverrides() throws BeanDefinitionValidationException {
 		// Check that lookup methods exist and determine their overloaded status.
-		if (hasMethodOverrides()) {
+		if (hasMethodOverrides()) {		// 检查查找方法是否存在，并确定其重载状态。
 			getMethodOverrides().getOverrides().forEach(this::prepareMethodOverride);
 		}
 	}

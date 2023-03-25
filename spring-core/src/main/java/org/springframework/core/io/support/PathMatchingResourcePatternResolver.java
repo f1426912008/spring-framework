@@ -306,7 +306,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	 * Return the PathMatcher that this resource pattern resolver uses.
 	 */
 	public PathMatcher getPathMatcher() {
-		return this.pathMatcher;
+		return this.pathMatcher;		// 路径匹配器
 	}
 
 

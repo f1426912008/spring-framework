@@ -256,11 +256,11 @@ public class AnnotatedBeanDefinitionReader {
 		}
 
 		abd.setInstanceSupplier(supplier);
-		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
+		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);	// 解析Scope元数据（是否是单例）
 		abd.setScope(scopeMetadata.getScopeName());
-		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
+		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));	// 生成bean的名称
 
-		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
+		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);		// 处理通用定义注解（懒加载...）
 		if (qualifiers != null) {
 			for (Class<? extends Annotation> qualifier : qualifiers) {
 				if (Primary.class == qualifier) {
