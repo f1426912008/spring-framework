@@ -324,11 +324,11 @@ public class DispatcherServlet extends FrameworkServlet {
 
 	/** List of HandlerMappings used by this servlet. */
 	@Nullable
-	private List<HandlerMapping> handlerMappings;
+	private List<HandlerMapping> handlerMappings;		// 处理器映射器
 
 	/** List of HandlerAdapters used by this servlet. */
 	@Nullable
-	private List<HandlerAdapter> handlerAdapters;
+	private List<HandlerAdapter> handlerAdapters;		// 处理器适配器
 
 	/** List of HandlerExceptionResolvers used by this servlet. */
 	@Nullable
@@ -344,7 +344,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 	/** List of ViewResolvers used by this servlet. */
 	@Nullable
-	private List<ViewResolver> viewResolvers;
+	private List<ViewResolver> viewResolvers;		// 视图解析器
 
 	private boolean parseRequestPath;
 
@@ -493,22 +493,24 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	@Override
 	protected void onRefresh(ApplicationContext context) {
-		initStrategies(context);
+		initStrategies(context);		// 初始化策略
 	}
 
 	/**
+	 * 初始化策略：各种处理器、适配器、视图解析器等，将从spring容器中获取bean
+	 *
 	 * Initialize the strategy objects that this servlet uses.
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
-		initMultipartResolver(context);
-		initLocaleResolver(context);
-		initThemeResolver(context);
-		initHandlerMappings(context);
-		initHandlerAdapters(context);
-		initHandlerExceptionResolvers(context);
+		initMultipartResolver(context);		// 初始化多部件解析器
+		initLocaleResolver(context);		// 初始化国际化解析器
+		initThemeResolver(context);			// 初始化主题解析器
+		initHandlerMappings(context);		// 初始化处理器映射器
+		initHandlerAdapters(context);		// 初始化处理器适配器
+		initHandlerExceptionResolvers(context);		// 初始化异常解析器
 		initRequestToViewNameTranslator(context);
-		initViewResolvers(context);
+		initViewResolvers(context);			// 初始化视图解析器
 		initFlashMapManager(context);
 	}
 
@@ -970,6 +972,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		try {
+			// 做调度，请求分发到对应的处理器
 			doDispatch(request, response);
 		}
 		finally {
@@ -1049,9 +1052,11 @@ public class DispatcherServlet extends FrameworkServlet {
 			Exception dispatchException = null;
 
 			try {
+				// 处理文件上传的request请求
 				processedRequest = checkMultipart(request);
 				multipartRequestParsed = (processedRequest != request);
 
+				// 确定当前请求的处理器
 				// Determine handler for the current request.
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) {
@@ -1059,6 +1064,7 @@ public class DispatcherServlet extends FrameworkServlet {
 					return;
 				}
 
+				// 确定当前请求的处理器适配器
 				// Determine handler adapter for the current request.
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
@@ -1072,10 +1078,12 @@ public class DispatcherServlet extends FrameworkServlet {
 					}
 				}
 
+				// 执行拦截器(interceptor)的preHandle方法
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					return;
 				}
 
+				// 通过处理器适配器，真正调用处理器方法
 				// Actually invoke the handler.
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
@@ -1083,7 +1091,9 @@ public class DispatcherServlet extends FrameworkServlet {
 					return;
 				}
 
+				// 设置默认视图名称
 				applyDefaultViewName(processedRequest, mv);
+				// 执行拦截器(interceptor)的postHandle方法
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
 			catch (Exception ex) {
@@ -1094,9 +1104,11 @@ public class DispatcherServlet extends FrameworkServlet {
 				// making them available for @ExceptionHandler methods and other scenarios.
 				dispatchException = new ServletException("Handler dispatch failed: " + err, err);
 			}
+			// 处理调度结果（也就是ModelAndView对象）
 			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
 		}
 		catch (Exception ex) {
+			// 执行拦截器(interceptor)的afterCompletion方法
 			triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
 		}
 		catch (Throwable err) {
@@ -1271,6 +1283,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
 		if (this.handlerMappings != null) {
 			for (HandlerMapping mapping : this.handlerMappings) {
+				// 通过处理器映射器，查找具体的处理器执行链（策略模式）
 				HandlerExecutionChain handler = mapping.getHandler(request);
 				if (handler != null) {
 					return handler;
@@ -1307,6 +1320,8 @@ public class DispatcherServlet extends FrameworkServlet {
 	protected HandlerAdapter getHandlerAdapter(Object handler) throws ServletException {
 		if (this.handlerAdapters != null) {
 			for (HandlerAdapter adapter : this.handlerAdapters) {
+				// 通过适配器的适配功能，去适配处理器，如果适配成功，则直接将适配器返回
+				// 策略模式，对修改关闭，对扩展开放，节省大量的if...else代码
 				if (adapter.supports(handler)) {
 					return adapter;
 				}
