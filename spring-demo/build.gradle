@@ -12,6 +12,11 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    // 使用Junit测试，可以避免JDK17控制台乱码的问题
+    optional("org.junit.jupiter:junit-jupiter-api")
+    // 引入javaEE相关，jsr注解引入如@Named
+    optional("jakarta.inject:jakarta.inject-api:2.0.0")
+    api(project(":spring-aspects"))
     api(project(":spring-context"))
     api(project(":spring-aop"))
     api(project(":spring-beans"))

@@ -335,6 +335,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public <T> T getBean(Class<T> requiredType, @Nullable Object... args) throws BeansException {
 		Assert.notNull(requiredType, "Required type must not be null");
+		// 解析获取Bean
 		Object resolved = resolveBean(ResolvableType.forRawClass(requiredType), args, false);
 		if (resolved == null) {
 			throw new NoSuchBeanDefinitionException(requiredType);
@@ -480,8 +481,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Nullable
 	private <T> T resolveBean(ResolvableType requiredType, @Nullable Object[] args, boolean nonUniqueAsNull) {
+		// 获取一个NamedBeanHolder对象，Bean保存在其中
 		NamedBeanHolder<T> namedBean = resolveNamedBean(requiredType, args, nonUniqueAsNull);
 		if (namedBean != null) {
+			// 返回Bean单例
 			return namedBean.getBeanInstance();
 		}
 		BeanFactory parent = getParentBeanFactory();
@@ -547,6 +550,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		List<String> result = new ArrayList<>();
 
 		// Check all bean definitions.
+		// 1.从Bean定义中依次获取所有的实例对象，如果满足放入集合中返回
 		for (String beanName : this.beanDefinitionNames) {
 			// Only consider bean as eligible if the bean name is not defined as alias for some other bean.
 			if (!isAlias(beanName)) {
@@ -603,6 +607,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 
 		// Check manually registered singletons too.
+		// 2.从手动注册的单例对象集合中依次获取所有的实例对象，如果满足放入集合中返回
 		for (String beanName : this.manualSingletonNames) {
 			try {
 				// In case of FactoryBean, match object created by FactoryBean.
@@ -1064,7 +1069,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			this.frozenBeanDefinitionNames = null;
 		}
 
+		// 检查是否有同名的BeanDefinition已经在IOC容器中注册
 		if (existingDefinition != null || containsSingleton(beanName)) {
+			/*
+			 * 尝试重置所有已经注册过的BeanDefinition的缓存，
+			 * 包括BeanDefinition的父类以及合并的BeanDefinition的缓存，
+			 * 所谓的合并BeanDefinition指的是有parent属性的BeanDefinition，
+			 * 该BeanDefinition会把parent的BeanDefinition属性合并在一块
+			 */
 			resetBeanDefinition(beanName);
 		}
 		else if (isConfigurationFrozen()) {
@@ -1241,8 +1253,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			ResolvableType requiredType, @Nullable Object[] args, boolean nonUniqueAsNull) throws BeansException {
 
 		Assert.notNull(requiredType, "Required type must not be null");
+		// 根据类型获取符合条件的所有单例对象名称，一个类可以有多个实例存储在Spring容器
 		String[] candidateNames = getBeanNamesForType(requiredType);
-
+		// 根据类名查询到不止一个对象时
 		if (candidateNames.length > 1) {
 			List<String> autowireCandidates = new ArrayList<>(candidateNames.length);
 			for (String beanName : candidateNames) {
@@ -1254,7 +1267,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				candidateNames = StringUtils.toStringArray(autowireCandidates);
 			}
 		}
-
+		// 只有一个结果
 		if (candidateNames.length == 1) {
 			return resolveNamedBean(candidateNames[0], requiredType, args);
 		}
@@ -1295,6 +1308,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	private <T> NamedBeanHolder<T> resolveNamedBean(
 			String beanName, ResolvableType requiredType, @Nullable Object[] args) throws BeansException {
 
+		// 从三级缓存取出Bean的单例对象
 		Object bean = getBean(beanName, null, args);
 		if (bean instanceof NullBean) {
 			return null;

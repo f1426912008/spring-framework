@@ -113,8 +113,9 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 	 */
 	public void invokeAndHandle(ServletWebRequest webRequest, ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
-
+		// 反射调用方法
 		Object returnValue = invokeForRequest(webRequest, mavContainer, providedArgs);
+		// 如果添加了@ResponseStatus注解，将设置响应状态
 		setResponseStatus(webRequest);
 
 		if (returnValue == null) {

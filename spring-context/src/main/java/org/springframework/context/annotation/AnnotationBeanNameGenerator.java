@@ -74,10 +74,11 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 
 	private final Map<String, Set<String>> metaAnnotationTypesCache = new ConcurrentHashMap<>();
 
-
+	// 生成bean的名称
 	@Override
 	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
 		if (definition instanceof AnnotatedBeanDefinition) {
+			// 从Bean的注释中确定Bean名称
 			String beanName = determineBeanNameFromAnnotation((AnnotatedBeanDefinition) definition);
 			if (StringUtils.hasText(beanName)) {
 				// Explicit bean name found.
@@ -85,10 +86,11 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 			}
 		}
 		// Fallback: generate a unique default bean name.
+		// 生成唯一的默认bean名称，一般为类名小写
 		return buildDefaultBeanName(definition, registry);
 	}
 
-	/**
+	/** 从注释中确定Bean名称
 	 * Derive a bean name from one of the annotations on the class.
 	 * @param annotatedDef the annotation-aware bean definition
 	 * @return the bean name, or {@code null} if none is found
@@ -132,7 +134,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 */
 	protected boolean isStereotypeWithNameValue(String annotationType,
 			Set<String> metaAnnotationTypes, @Nullable Map<String, Object> attributes) {
-
+		// 如果bean添加了注解的类型是@Component、@ManagedBean、@Named
 		boolean isStereotype = annotationType.equals(COMPONENT_ANNOTATION_CLASSNAME) ||
 				metaAnnotationTypes.contains(COMPONENT_ANNOTATION_CLASSNAME) ||
 				annotationType.equals("jakarta.annotation.ManagedBean") ||

@@ -548,28 +548,34 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			StartupStep contextRefresh = this.applicationStartup.start("spring.context.refresh");
 
 			// Prepare this context for refreshing.
-			prepareRefresh();		// 准备这个上下文以刷新。
+			// 准备这个上下文以刷新。
+			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
-			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();		// 告诉子类刷新内部bean工厂（从xml读取bean定义对象注册）。
+			// 告诉子类刷新内部bean工厂（从xml读取bean定义对象注册）。
+			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);	// 准备在这种情况下使用的bean工厂。
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
-				postProcessBeanFactory(beanFactory);		// 允许在上下文子类中对bean工厂进行后处理（默认空实现）
+				// 允许在上下文子类中对bean工厂进行后处理（默认空实现）
+				postProcessBeanFactory(beanFactory);
 
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
 				// Invoke factory processors registered as beans in the context.
-				invokeBeanFactoryPostProcessors(beanFactory);		// 调用bean工厂后置处理器方法
+				// 调用bean工厂后置处理器方法
+				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
-				registerBeanPostProcessors(beanFactory);	// 注册bean的后置处理器
+				// 注册bean的后置处理器
+				registerBeanPostProcessors(beanFactory);
 				beanPostProcess.end();
 
 				// Initialize message source for this context.
-				initMessageSource();		// 初始化messageSource单例对象
+				// 初始化messageSource单例对象
+				initMessageSource();
 
 				// Initialize event multicaster for this context.
 				initApplicationEventMulticaster();
@@ -694,8 +700,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);
 		beanFactory.ignoreDependencyInterface(ApplicationStartupAware.class);
 
-		// BeanFactory interface not registered as resolvable type in a plain factory.	BeanFactory接口在普通工厂中未注册为可解析类型。
-		// MessageSource registered (and found for autowiring) as a bean.	MessageSource注册 (并发现用于自动注入) 为bean。
+		// BeanFactory interface not registered as resolvable type in a plain factory.
+		// MessageSource registered (and found for autowiring) as a bean.
+		// BeanFactory接口在普通工厂中未注册为可解析类型。
+		// MessageSource注册 (并发现用于自动注入) 为bean。
 		beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
 		beanFactory.registerResolvableDependency(ResourceLoader.class, this);
 		beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
@@ -711,7 +719,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
 		}
 
-		// Register default environment beans.		注册默认环境bean（系统内部的bean对象）。
+		// Register default environment beans.
+		// 注册默认环境bean（系统内部的bean对象）。
 		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
 			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
 		}

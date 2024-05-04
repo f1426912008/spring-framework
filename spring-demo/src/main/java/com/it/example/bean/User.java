@@ -1,6 +1,9 @@
 package com.it.example.bean;
 
-public class User {
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+
+public class User implements InitializingBean, DisposableBean {
 
 	private String name;
 
@@ -23,11 +26,20 @@ public class User {
 	}
 
 	public void init() {
-		System.out.println("User初始化");
+		System.out.println("User====指定方法完成初始化");
+	}
+
+	public void myDestroy() {
+		System.out.println("User====指定方法完成销毁对象");
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		System.out.println("User====实现接口完成初始化");
 	}
 
 	public void destroy() {
-		System.out.println("User销毁");
+		System.out.println("User====实现接口完成销毁");
 	}
 
 	@Override

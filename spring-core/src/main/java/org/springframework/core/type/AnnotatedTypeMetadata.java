@@ -78,6 +78,7 @@ public interface AnnotatedTypeMetadata {
 	 */
 	@Nullable
 	default Map<String, Object> getAnnotationAttributes(String annotationName) {
+		// 获取注解的属性值
 		return getAnnotationAttributes(annotationName, false);
 	}
 
@@ -97,7 +98,7 @@ public interface AnnotatedTypeMetadata {
 	@Nullable
 	default Map<String, Object> getAnnotationAttributes(String annotationName,
 			boolean classValuesAsString) {
-
+		// 获取此注解的属性值
 		MergedAnnotation<Annotation> annotation = getAnnotations().get(annotationName,
 				null, MergedAnnotationSelectors.firstDirectlyDeclared());
 		if (!annotation.isPresent()) {
