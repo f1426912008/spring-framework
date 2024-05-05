@@ -143,6 +143,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	private String serializationId;
 
 	/** Whether to allow re-registration of a different definition with the same name. */
+	// 是否允许重写Bean定义。是否允许重新注册具有相同名称的不同定义。
 	private boolean allowBeanDefinitionOverriding = true;
 
 	/** Whether to allow eager class loading even for lazy-init beans. */
@@ -155,10 +156,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	/** Resolver to use for checking if a bean definition is an autowire candidate. */
 	private AutowireCandidateResolver autowireCandidateResolver = SimpleAutowireCandidateResolver.INSTANCE;
 
-	/** Map from dependency type to corresponding autowired value.	对应的autowired值的依赖类型。 */
+	/** Map from dependency type to corresponding autowired value. */
+	// 对应的autowired值的依赖类型。
 	private final Map<Class<?>, Object> resolvableDependencies = new ConcurrentHashMap<>(16);
 
-	/** Map of bean definition objects, keyed by bean name.		bean定义对象的Map，以bean名称为键。 */
+	/** Map of bean definition objects, keyed by bean name. */
+	// bean定义对象的Map，以bean名称为键。
 	private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
 
 	/** Map from bean name to merged BeanDefinitionHolder. */
@@ -994,7 +997,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		if (beanDefinition instanceof AbstractBeanDefinition abd) {
 			try {
-				abd.validate();		// 验证并准备为此bean定义的方法覆盖。检查是否存在具有指定名称的方法。
+				// 验证并准备为此bean定义的方法覆盖。检查是否存在具有指定名称的方法。
+				abd.validate();
 			}
 			catch (BeanDefinitionValidationException ex) {
 				throw new BeanDefinitionStoreException(beanDefinition.getResourceDescription(), beanName,
@@ -1061,10 +1065,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 			else {
-				// Still in startup registration phase		仍处于启动注册阶段
-				this.beanDefinitionMap.put(beanName, beanDefinition);	// 添加到bean定义Map中
+				// Still in startup registration phase
+				// 仍处于启动注册阶段。添加到bean定义Map中
+				this.beanDefinitionMap.put(beanName, beanDefinition);
 				this.beanDefinitionNames.add(beanName);
-				removeManualSingletonName(beanName);	// 删除手动单例名称
+				// 删除手动单例名称
+				removeManualSingletonName(beanName);
 			}
 			this.frozenBeanDefinitionNames = null;
 		}

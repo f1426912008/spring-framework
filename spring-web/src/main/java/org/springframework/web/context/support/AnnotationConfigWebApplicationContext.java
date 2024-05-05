@@ -212,10 +212,12 @@ public class AnnotationConfigWebApplicationContext extends AbstractRefreshableWe
 		AnnotatedBeanDefinitionReader reader = getAnnotatedBeanDefinitionReader(beanFactory);
 		ClassPathBeanDefinitionScanner scanner = getClassPathBeanDefinitionScanner(beanFactory);
 
+		// 获取Bean名称生成器
 		BeanNameGenerator beanNameGenerator = getBeanNameGenerator();
 		if (beanNameGenerator != null) {
 			reader.setBeanNameGenerator(beanNameGenerator);
 			scanner.setBeanNameGenerator(beanNameGenerator);
+			// 将名称生成器注册到spring的三级缓存中
 			beanFactory.registerSingleton(AnnotationConfigUtils.CONFIGURATION_BEAN_NAME_GENERATOR, beanNameGenerator);
 		}
 

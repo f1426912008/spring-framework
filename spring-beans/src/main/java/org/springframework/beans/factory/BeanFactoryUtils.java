@@ -71,7 +71,7 @@ public abstract class BeanFactoryUtils {
 		return (name != null && name.startsWith(BeanFactory.FACTORY_BEAN_PREFIX));
 	}
 
-	/**
+	/** 返回实际的bean名称，剥离工厂取消引用前缀 (如果有的话，也剥离重复的工厂前缀，如果找到的话)。
 	 * Return the actual bean name, stripping out the factory dereference
 	 * prefix (if any, also stripping repeated factory prefixes if found).
 	 * @param name the name of the bean

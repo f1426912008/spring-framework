@@ -160,12 +160,14 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	private BeanPostProcessorCache beanPostProcessorCache;
 
 	/** Map from scope identifier String to corresponding Scope. */
+	// Spring 所支持的Scope集合
 	private final Map<String, Scope> scopes = new LinkedHashMap<>(8);
 
 	/** Map from bean name to merged RootBeanDefinition. */
 	private final Map<String, RootBeanDefinition> mergedBeanDefinitions = new ConcurrentHashMap<>(256);
 
-	/** Names of beans that have already been created at least once. */		// 已经创建至少一次的bean名称。
+	/** Names of beans that have already been created at least once. */
+	// 已经创建至少一次的bean名称。
 	private final Set<String> alreadyCreated = Collections.newSetFromMap(new ConcurrentHashMap<>(256));
 
 	/** Names of beans that are currently in creation. */
@@ -764,6 +766,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	@Override
 	public boolean containsLocalBean(String name) {
+		// 转换后的Bean名称(别名处理)
 		String beanName = transformedBeanName(name);
 		return ((containsSingleton(beanName) || containsBeanDefinition(beanName)) &&
 				(!BeanFactoryUtils.isFactoryDereference(name) || isFactoryBean(beanName)));
@@ -935,6 +938,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	@Override
 	public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
 		Assert.notNull(beanPostProcessor, "BeanPostProcessor must not be null");
+		// 先删除，再添加。保证最新的执行顺序
 		synchronized (this.beanPostProcessors) {
 			// Remove from old position, if any
 			this.beanPostProcessors.remove(beanPostProcessor);
@@ -952,6 +956,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @see #addBeanPostProcessor
 	 */
 	public void addBeanPostProcessors(Collection<? extends BeanPostProcessor> beanPostProcessors) {
+		// 先删除，再添加。保证最新的执行顺序
 		synchronized (this.beanPostProcessors) {
 			// Remove from old position, if any
 			this.beanPostProcessors.removeAll(beanPostProcessors);
@@ -1033,9 +1038,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	public void registerScope(String scopeName, Scope scope) {
 		Assert.notNull(scopeName, "Scope identifier must not be null");
 		Assert.notNull(scope, "Scope must not be null");
+		// 不允许注册单例/原型的Scope，因为默认的就是这两个
 		if (SCOPE_SINGLETON.equals(scopeName) || SCOPE_PROTOTYPE.equals(scopeName)) {
 			throw new IllegalArgumentException("Cannot replace existing scopes 'singleton' and 'prototype'");
 		}
+		// 子类进行注册或替换，如果key已存在，返回old，否则直接保存并返回null
 		Scope previous = this.scopes.put(scopeName, scope);
 		if (previous != null && previous != scope) {
 			if (logger.isDebugEnabled()) {
@@ -1120,6 +1127,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	@Override
 	public boolean isFactoryBean(String name) throws NoSuchBeanDefinitionException {
 		String beanName = transformedBeanName(name);
+		// 获取单例对象，不允许为未赋值的早期Bean对象
 		Object beanInstance = getSingleton(beanName, false);
 		if (beanInstance != null) {
 			return (beanInstance instanceof FactoryBean);

@@ -182,7 +182,7 @@ public abstract class WebApplicationContextUtils {
 	 */
 	public static void registerWebApplicationScopes(ConfigurableListableBeanFactory beanFactory,
 			@Nullable ServletContext sc) {
-
+		// 注册Scope到BeanFactory，Scope不允许为单例/原型
 		beanFactory.registerScope(WebApplicationContext.SCOPE_REQUEST, new RequestScope());
 		beanFactory.registerScope(WebApplicationContext.SCOPE_SESSION, new SessionScope());
 		if (sc != null) {
@@ -221,14 +221,17 @@ public abstract class WebApplicationContextUtils {
 	public static void registerEnvironmentBeans(ConfigurableListableBeanFactory bf,
 			@Nullable ServletContext servletContext, @Nullable ServletConfig servletConfig) {
 
+		// 1.注册 servletContext 到Spring容器
 		if (servletContext != null && !bf.containsBean(WebApplicationContext.SERVLET_CONTEXT_BEAN_NAME)) {
 			bf.registerSingleton(WebApplicationContext.SERVLET_CONTEXT_BEAN_NAME, servletContext);
 		}
 
+		// 2.注册 servletConfig 到Spring容器
 		if (servletConfig != null && !bf.containsBean(ConfigurableWebApplicationContext.SERVLET_CONFIG_BEAN_NAME)) {
 			bf.registerSingleton(ConfigurableWebApplicationContext.SERVLET_CONFIG_BEAN_NAME, servletConfig);
 		}
 
+		// 3.注册 contextParameters 到Spring容器，值为servletContext和servletConfig的初始化的参数
 		if (!bf.containsBean(WebApplicationContext.CONTEXT_PARAMETERS_BEAN_NAME)) {
 			Map<String, String> parameterMap = new HashMap<>();
 			if (servletContext != null) {
@@ -249,6 +252,7 @@ public abstract class WebApplicationContextUtils {
 					Collections.unmodifiableMap(parameterMap));
 		}
 
+		// 4.注册 contextAttributes 到Spring容器，值为 servletContext 内部保存的属性值
 		if (!bf.containsBean(WebApplicationContext.CONTEXT_ATTRIBUTES_BEAN_NAME)) {
 			Map<String, Object> attributeMap = new HashMap<>();
 			if (servletContext != null) {

@@ -1,4 +1,4 @@
-package com.it.example.config;
+package com.it.example.bean;
 
 import com.it.example.bean.User;
 import com.it.example.config.condition.MyCondition;

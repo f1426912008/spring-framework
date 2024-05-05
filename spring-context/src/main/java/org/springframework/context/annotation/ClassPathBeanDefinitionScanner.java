@@ -163,6 +163,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		this.registry = registry;
 
 		if (useDefaultFilters) {
+			// 注册默认的注解过滤器，如 @Component、@Named等注解
 			registerDefaultFilters();
 		}
 		setEnvironment(environment);
@@ -255,10 +256,12 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		doScan(basePackages);
 
 		// Register annotation config processors, if necessary.
+		// 如有必要，注册注释配置处理器。
 		if (this.includeAnnotationConfig) {
 			AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 		}
 
+		// 返回扫描出的Bean的数量 = 最终值 - 初始值
 		return (this.registry.getBeanDefinitionCount() - beanCountAtScanStart);
 	}
 
@@ -274,6 +277,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 		for (String basePackage : basePackages) {
+			// 查找候选组件
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 			for (BeanDefinition candidate : candidates) {
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
@@ -283,13 +287,16 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
 				if (candidate instanceof AnnotatedBeanDefinition) {
+					// 校验是否存在某些注解，如：@Lazy、@Primary、@DependsOn、@Role、@Description等
 					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
 				}
 				if (checkCandidate(beanName, candidate)) {
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
+					// 设置Scope指定的代理模式
 					definitionHolder =
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 					beanDefinitions.add(definitionHolder);
+					// 注册到Bean定义的Map中
 					registerBeanDefinition(definitionHolder, this.registry);
 				}
 			}

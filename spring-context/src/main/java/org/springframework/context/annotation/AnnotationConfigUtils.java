@@ -135,6 +135,7 @@ public abstract class AnnotationConfigUtils {
 	 * @param registry the registry to operate on
 	 */
 	public static void registerAnnotationConfigProcessors(BeanDefinitionRegistry registry) {
+		// 注册基本的内部配置的后置处理器到Bean定义的Map中
 		registerAnnotationConfigProcessors(registry, null);
 	}
 
@@ -229,6 +230,7 @@ public abstract class AnnotationConfigUtils {
 			BeanDefinitionRegistry registry, RootBeanDefinition definition, String beanName) {
 
 		definition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+		// 注册Bean定义到Map中
 		registry.registerBeanDefinition(beanName, definition);
 		return new BeanDefinitionHolder(definition, beanName);
 	}
@@ -247,12 +249,12 @@ public abstract class AnnotationConfigUtils {
 	}
 
 	public static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd) {
-		// 校验是否存在某些注解
+		// 校验是否存在某些注解，如：@Lazy、@Primary、@DependsOn、@Role、@Description等
 		processCommonDefinitionAnnotations(abd, abd.getMetadata());
 	}
 
 	/**
-	 * 校验是否存在某些注解
+	 * 	校验是否存在某些注解，如：@Lazy、@Primary、@DependsOn、@Role、@Description等
 	 */
 	static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd, AnnotatedTypeMetadata metadata) {
 		AnnotationAttributes lazy = attributesFor(metadata, Lazy.class);
@@ -284,6 +286,9 @@ public abstract class AnnotationConfigUtils {
 		}
 	}
 
+	/**
+	 * 设置Scope指定的代理模式
+	 */
 	static BeanDefinitionHolder applyScopedProxyMode(
 			ScopeMetadata metadata, BeanDefinitionHolder definition, BeanDefinitionRegistry registry) {
 
