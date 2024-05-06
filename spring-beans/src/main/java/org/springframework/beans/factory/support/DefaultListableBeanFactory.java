@@ -1146,12 +1146,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 
 		// Reset all bean definitions that have the given bean as parent (recursively).
+		// 重置具有给定bean作为父bean的所有bean定义 (递归)。
 		for (String bdName : this.beanDefinitionNames) {
 			if (!beanName.equals(bdName)) {
 				BeanDefinition bd = this.beanDefinitionMap.get(bdName);
 				// Ensure bd is non-null due to potential concurrent modification of beanDefinitionMap.
 				if (bd != null && beanName.equals(bd.getParentName())) {
-					resetBeanDefinition(bdName);	// 递归重置bean定义
+					// 递归重置bean定义
+					resetBeanDefinition(bdName);
 				}
 			}
 		}

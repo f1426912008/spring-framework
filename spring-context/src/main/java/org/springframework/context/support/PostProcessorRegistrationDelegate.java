@@ -85,7 +85,7 @@ final class PostProcessorRegistrationDelegate {
 
 		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
 		// 首先调用 BeanDefinitionRegistryPostProcessors (如果有的话)。
-		Set<String> processedBeans = new HashSet<>();
+		Set<String> processedBeans = new HashSet<>();	// 集合用于记录已执行过的Processor，防止重复执行
 
 		if (beanFactory instanceof BeanDefinitionRegistry registry) {
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
@@ -108,7 +108,7 @@ final class PostProcessorRegistrationDelegate {
 			// PriorityOrdered, Ordered, and the rest.
 			// 不要在这里初始化FactoryBeans:
 			// 我们需要让所有常规bean保持未初始化状态，以便让bean工厂后处理器应用于它们!
-			// 在实现PriorityOrdered、Ordered和rest的 BeanDefinitionRegistryPostProcessors 分离
+			// 在实现 PriorityOrdered、Ordered和其余的 BeanDefinitionRegistryPostProcessors 分离
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
