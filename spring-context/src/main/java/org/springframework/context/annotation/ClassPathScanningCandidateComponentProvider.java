@@ -213,6 +213,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		}
 		catch (ClassNotFoundException ex) {
 			// JSR-250 1.1 API (as included in Jakarta EE) not available - simply skip.
+			// JSR-250 1.1 API (包括在Jakarta EE中) 不可用-直接跳过。
 		}
 		try {
 			this.includeFilters.add(new AnnotationTypeFilter(
@@ -221,6 +222,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		}
 		catch (ClassNotFoundException ex) {
 			// JSR-330 API not available - simply skip.
+			// JSR-330 API不可用-直接跳过。
 		}
 	}
 

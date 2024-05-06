@@ -256,6 +256,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
+					// singletonFactory是一个函数式接口，进行回调创建Bean对象
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				}
@@ -618,6 +619,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		// 2.如果Bean实现了DisposableBean接口，则需要调用销毁方法
 		if (bean != null) {
 			try {
+				// 销毁方法调用
 				bean.destroy();
 			}
 			catch (Throwable ex) {

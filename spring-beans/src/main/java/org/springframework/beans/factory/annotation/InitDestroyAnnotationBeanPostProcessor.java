@@ -189,6 +189,7 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());
 		try {
+			// 调用 @PostConstruct 标记的初始化方法
 			metadata.invokeInitMethods(bean, beanName);
 		}
 		catch (InvocationTargetException ex) {
@@ -209,6 +210,7 @@ public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareB
 	public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
 		LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());
 		try {
+			// 调用 @PreDestroy 标记的销毁方法
 			metadata.invokeDestroyMethods(bean, beanName);
 		}
 		catch (InvocationTargetException ex) {

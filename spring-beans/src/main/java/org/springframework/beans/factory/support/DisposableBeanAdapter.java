@@ -143,7 +143,7 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 				this.destroyMethods = destroyMethods;
 			}
 		}
-
+		// 判断哪些后置处理器需要执行销毁方法，由接口内的方法控制
 		this.beanPostProcessors = filterPostProcessors(postProcessors, bean);
 	}
 
@@ -159,6 +159,7 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 		this.beanName = bean.getClass().getName();
 		this.nonPublicAccessAllowed = true;
 		this.invokeDisposableBean = (this.bean instanceof DisposableBean);
+		// 判断哪些后置处理器需要执行销毁方法，由接口内的方法控制
 		this.beanPostProcessors = filterPostProcessors(postProcessors, bean);
 	}
 
@@ -188,6 +189,7 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 	public void destroy() {
 		if (!CollectionUtils.isEmpty(this.beanPostProcessors)) {
 			for (DestructionAwareBeanPostProcessor processor : this.beanPostProcessors) {
+				// 第九次：后置处理器执行，销毁方法
 				processor.postProcessBeforeDestruction(this.bean, this.beanName);
 			}
 		}
@@ -197,6 +199,7 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 				logger.trace("Invoking destroy() on bean with name '" + this.beanName + "'");
 			}
 			try {
+				// DisposableBean接口的销毁方法执行
 				((DisposableBean) this.bean).destroy();
 			}
 			catch (Throwable ex) {
@@ -228,11 +231,13 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 			}
 		}
 		else if (this.destroyMethods != null) {
+			// 调用自己的销毁方法，根据方法调用
 			for (Method destroyMethod : this.destroyMethods) {
 				invokeCustomDestroyMethod(destroyMethod);
 			}
 		}
 		else if (this.destroyMethodNames != null) {
+			// 调用自己的销毁方法，根据方法名称调用
 			for (String destroyMethodName: this.destroyMethodNames) {
 				Method destroyMethod = determineDestroyMethod(destroyMethodName);
 				if (destroyMethod != null) {
@@ -412,6 +417,7 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 		if (!CollectionUtils.isEmpty(processors)) {
 			filteredPostProcessors = new ArrayList<>(processors.size());
 			for (DestructionAwareBeanPostProcessor processor : processors) {
+				// 后置处理器的销毁开关，由requiresDestruction方法控制(DestructionAwareBeanPostProcessor)
 				if (processor.requiresDestruction(bean)) {
 					filteredPostProcessors.add(processor);
 				}

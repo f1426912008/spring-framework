@@ -1,7 +1,6 @@
 package com.it.example.bean;
 
-import com.it.example.bean.User;
-import com.it.example.config.condition.MyCondition;
+import com.it.example.condition.MyCondition;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;

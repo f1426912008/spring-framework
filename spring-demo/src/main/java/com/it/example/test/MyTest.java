@@ -1,8 +1,8 @@
 package com.it.example.test;
 
+import com.it.example.bean.MyBeanA;
 import com.it.example.bean.Student;
 import com.it.example.bean.User;
-import com.it.example.bean.MyBeanA;
 import com.it.example.publish.MyEvent;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -64,6 +64,16 @@ public class MyTest {
 
 		// 发布一个事件，携带自定义的信息对象，后续由监听器触发执行逻辑
 		applicationContext.publishEvent(new MyEvent(user));
+
+		applicationContext.close();
+	}
+
+	@Test
+	public void test5() {
+		AnnotationConfigApplicationContext applicationContext =
+				new AnnotationConfigApplicationContext("com.it.example.processor", "com.it.example.config");
+
+		applicationContext.getBean(User.class);
 
 		applicationContext.close();
 	}
