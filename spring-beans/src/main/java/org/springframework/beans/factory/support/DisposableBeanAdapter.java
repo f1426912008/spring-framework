@@ -396,6 +396,7 @@ class DisposableBeanAdapter implements DisposableBean, Runnable, Serializable {
 	public static boolean hasApplicableProcessors(Object bean, List<DestructionAwareBeanPostProcessor> postProcessors) {
 		if (!CollectionUtils.isEmpty(postProcessors)) {
 			for (DestructionAwareBeanPostProcessor processor : postProcessors) {
+				// requiresDestruction() 控制后置处理器是否执行，返回 true 时将执行销毁的方法
 				if (processor.requiresDestruction(bean)) {
 					return true;
 				}

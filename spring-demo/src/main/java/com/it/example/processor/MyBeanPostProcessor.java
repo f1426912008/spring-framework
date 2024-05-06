@@ -18,7 +18,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
 	}
 
 	/**
-	 * 用于在实例化Bean后的 初始化操作后 需要执行的逻辑，
+	 * 用于在实例化Bean后的 初始化操作后 需要执行的逻辑
 	 */
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {

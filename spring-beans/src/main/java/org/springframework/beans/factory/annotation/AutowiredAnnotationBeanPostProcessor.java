@@ -367,6 +367,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 						else if (primaryConstructor != null) {
 							continue;
 						}
+						// 查找 Constructor 上的注解
 						MergedAnnotation<?> ann = findAutowiredAnnotation(candidate);
 						if (ann == null) {
 							Class<?> userClass = ClassUtils.getUserClass(beanClass);
@@ -374,6 +375,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 								try {
 									Constructor<?> superCtor =
 											userClass.getDeclaredConstructor(candidate.getParameterTypes());
+									// 查找父类中的 Constructor 上的注解
 									ann = findAutowiredAnnotation(superCtor);
 								}
 								catch (NoSuchMethodException ex) {
@@ -478,6 +480,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
+			// 依赖注入赋值
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (BeanCreationException ex) {
@@ -514,8 +517,10 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 	private InjectionMetadata findAutowiringMetadata(String beanName, Class<?> clazz, @Nullable PropertyValues pvs) {
 		// Fall back to class name as cache key, for backwards compatibility with custom callers.
+		// 回退到类名称作为缓存键，以便与自定义调用方向后兼容。
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
 		// Quick check on the concurrent map first, with minimal locking.
+		// 首先快速检查并发映射，使用最少的锁定。
 		InjectionMetadata metadata = this.injectionMetadataCache.get(cacheKey);
 		if (InjectionMetadata.needsRefresh(metadata, clazz)) {
 			synchronized (this.injectionMetadataCache) {
@@ -542,7 +547,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 		do {
 			final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
-
+			// 1.查找 Field 上的注解
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
 				MergedAnnotation<?> ann = findAutowiredAnnotation(field);
 				if (ann != null) {
@@ -557,6 +562,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				}
 			});
 
+			// 2.查找 Method 上的注解
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
 				Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {
@@ -590,6 +596,9 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		return InjectionMetadata.forElements(elements, clazz);
 	}
 
+	/**
+	 * 查找可访问对象上存在的注解，包含 Field、Method、Constructor等
+	 */
 	@Nullable
 	private MergedAnnotation<?> findAutowiredAnnotation(AccessibleObject ao) {
 		MergedAnnotations annotations = MergedAnnotations.from(ao);
@@ -681,6 +690,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			Object value;
 			if (this.cached) {
 				try {
+					// 先尝试从缓存中取值
 					value = resolvedCachedArgument(beanName, this.cachedFieldValue);
 				}
 				catch (NoSuchBeanDefinitionException ex) {
@@ -689,8 +699,10 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				}
 			}
 			else {
+				// 解析属性的值
 				value = resolveFieldValue(field, bean, beanName);
 			}
+			// 反射给属性赋值
 			if (value != null) {
 				ReflectionUtils.makeAccessible(field);
 				field.set(bean, value);
@@ -706,6 +718,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			TypeConverter typeConverter = beanFactory.getTypeConverter();
 			Object value;
 			try {
+				// 根据 Field 解析依赖的 Bean实例
 				value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);
 			}
 			catch (BeansException ex) {
@@ -758,6 +771,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			Object[] arguments;
 			if (this.cached) {
 				try {
+					// 先从缓存取值
 					arguments = resolveCachedArguments(beanName);
 				}
 				catch (NoSuchBeanDefinitionException ex) {
@@ -766,8 +780,10 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				}
 			}
 			else {
+				// 解析方法的参数
 				arguments = resolveMethodArguments(method, bean, beanName);
 			}
+			// 反射调用方法进行赋值
 			if (arguments != null) {
 				try {
 					ReflectionUtils.makeAccessible(method);

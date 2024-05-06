@@ -118,12 +118,17 @@ public class InjectionMetadata {
 		this.checkedElements = checkedElements;
 	}
 
+	/**
+	 * 依赖注入赋值
+	 */
 	public void inject(Object target, @Nullable String beanName, @Nullable PropertyValues pvs) throws Throwable {
 		Collection<InjectedElement> checkedElements = this.checkedElements;
 		Collection<InjectedElement> elementsToIterate =
 				(checkedElements != null ? checkedElements : this.injectedElements);
 		if (!elementsToIterate.isEmpty()) {
 			for (InjectedElement element : elementsToIterate) {
+				// 给对象的属性赋值，支持注解 @Autowired、@Value、@Inject等
+				// 支持其他的注解注入，如：jsr的 @Resource、@EJB，jpa的 @PersistenceUnit、@PersistenceContext
 				element.inject(target, beanName, pvs);
 			}
 		}
@@ -225,6 +230,7 @@ public class InjectionMetadata {
 		}
 
 		/**
+		 * 支持其他的注解注入，如：jsr的 @Resource、@EJB，jpa的 @PersistenceUnit、@PersistenceContext
 		 * Either this or {@link #getResourceToInject} needs to be overridden.
 		 */
 		protected void inject(Object target, @Nullable String requestingBeanName, @Nullable PropertyValues pvs)
@@ -233,6 +239,7 @@ public class InjectionMetadata {
 			if (this.isField) {
 				Field field = (Field) this.member;
 				ReflectionUtils.makeAccessible(field);
+				// 属性注入
 				field.set(target, getResourceToInject(target, requestingBeanName));
 			}
 			else {
@@ -242,6 +249,7 @@ public class InjectionMetadata {
 				try {
 					Method method = (Method) this.member;
 					ReflectionUtils.makeAccessible(method);
+					// 方法注入
 					method.invoke(target, getResourceToInject(target, requestingBeanName));
 				}
 				catch (InvocationTargetException ex) {

@@ -1122,10 +1122,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	public BeanDefinition getMergedBeanDefinition(String name) throws BeansException {
 		String beanName = transformedBeanName(name);
 		// Efficiently check whether bean definition exists in this factory.
+		// 有效地检查此工厂中是否存在bean定义。
 		if (!containsBeanDefinition(beanName) && getParentBeanFactory() instanceof ConfigurableBeanFactory parent) {
 			return parent.getMergedBeanDefinition(beanName);
 		}
 		// Resolve merged bean definition locally.
+		// 在本地解析合并的bean定义。
 		return getMergedLocalBeanDefinition(beanName);
 	}
 
@@ -1391,6 +1393,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 				else {
 					// Child bean definition: needs to be merged with parent.
+					// 子类的 Bean定义，需要与父类 Bean合并。
 					BeanDefinition pbd;
 					try {
 						String parentBeanName = transformedBeanName(bd.getParentName());
@@ -1418,6 +1421,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 
 				// Set default singleton scope, if not configured before.
+				// 如果之前未配置，设置默认的单例作用域。
 				if (!StringUtils.hasLength(mbd.getScope())) {
 					mbd.setScope(SCOPE_SINGLETON);
 				}
@@ -1869,6 +1873,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @see org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor
 	 */
 	protected boolean requiresDestruction(Object bean, RootBeanDefinition mbd) {
+		// hasApplicableProcessors() 控制后置处理器是否执行，返回 true 时将执行销毁的方法
 		return (bean.getClass() != NullBean.class && (DisposableBeanAdapter.hasDestroyMethod(bean, mbd) ||
 				(hasDestructionAwareBeanPostProcessors() && DisposableBeanAdapter.hasApplicableProcessors(
 						bean, getBeanPostProcessorCache().destructionAware))));
@@ -1887,6 +1892,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @see #registerDependentBean
 	 */
 	protected void registerDisposableBeanIfNecessary(String beanName, Object bean, RootBeanDefinition mbd) {
+		// requiresDestruction() 控制后置处理器是否执行，返回 true 时将执行销毁的方法
 		if (!mbd.isPrototype() && requiresDestruction(bean, mbd)) {
 			if (mbd.isSingleton()) {
 				// Register a DisposableBean implementation that performs all destruction

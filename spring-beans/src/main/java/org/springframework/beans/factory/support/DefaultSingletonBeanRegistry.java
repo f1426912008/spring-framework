@@ -619,7 +619,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		// 2.如果Bean实现了DisposableBean接口，则需要调用销毁方法
 		if (bean != null) {
 			try {
-				// 销毁方法调用
+				// 销毁方法调用，销毁的后置处理器执行
 				bean.destroy();
 			}
 			catch (Throwable ex) {

@@ -28,6 +28,7 @@ public class MyInstantiationAwareBeanPostProcessor implements InstantiationAware
 
 	/**
 	 * 实例化Bean之后，属性填充之前，如果需要额外的参数，使用 PropertyValues 进行传值
+	 * 它是对依赖注入过程进行细粒度的控制，例如：@Autowired相关注解就是在这里完成注入的
 	 */
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) throws BeansException {
