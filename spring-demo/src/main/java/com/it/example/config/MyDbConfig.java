@@ -9,7 +9,8 @@ import org.springframework.context.annotation.PropertySource;
 
 @Import(MyBeanA.class)
 @ImportResource("classpath:spring-demo.xml")		// 仅支持 XML 和 *.groovy 等文件的解析
-@PropertySource("classpath:custom.properties")		// spring 不支持 yml 文件解析，springboot 可以
+@PropertySource(encoding = "UTF-8",
+		value = "classpath:custom.properties")		// spring 不支持 yml 文件解析，springboot 可以
 @Configuration
 public class MyDbConfig {
 
