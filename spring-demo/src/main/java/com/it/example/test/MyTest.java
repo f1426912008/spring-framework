@@ -1,9 +1,12 @@
 package com.it.example.test;
 
+import com.it.example.bean.DbProperties;
 import com.it.example.bean.MyBeanA;
 import com.it.example.bean.Student;
 import com.it.example.bean.User;
-import com.it.example.config.MyDbConfig;
+import com.it.example.config.MyConfiguration;
+import com.it.example.config.PostProcessorConfig;
+import com.it.example.processor.YamlPostProcessor;
 import com.it.example.publish.MyEvent;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -72,9 +75,9 @@ public class MyTest {
 	@Test
 	public void test5() {
 		AnnotationConfigApplicationContext applicationContext =
-				new AnnotationConfigApplicationContext("com.it.example.processor", "com.it.example.config");
+				new AnnotationConfigApplicationContext(PostProcessorConfig.class);
 
-		applicationContext.getBean(User.class);
+		applicationContext.getBean(PostProcessorConfig.class);
 
 		applicationContext.close();
 	}
@@ -82,9 +85,9 @@ public class MyTest {
 	@Test
 	public void test6() {
 		AnnotationConfigApplicationContext applicationContext =
-				new AnnotationConfigApplicationContext(MyDbConfig.class);
+				new AnnotationConfigApplicationContext(MyConfiguration.class);
 
-		MyDbConfig config = applicationContext.getBean(MyDbConfig.class);
+		MyConfiguration config = applicationContext.getBean(MyConfiguration.class);
 		System.out.println(config);
 
 		// 使用 @ImportResource("classpath:spring-demo.xml")，引入的Bean
@@ -94,6 +97,18 @@ public class MyTest {
 		// 使用 @Import(MyBeanA.class)，引入的Bean
 		MyBeanA bean = applicationContext.getBean(MyBeanA.class);
 		System.out.println(bean);
+
+		applicationContext.close();
+	}
+
+	@Test
+	public void test7() {
+		AnnotationConfigApplicationContext applicationContext =
+				new AnnotationConfigApplicationContext(YamlPostProcessor.class, DbProperties.class);
+
+		// 后置处理器实现读取YML文件
+		DbProperties dbProperties = applicationContext.getBean(DbProperties.class);
+		System.out.println(dbProperties);
 
 		applicationContext.close();
 	}
