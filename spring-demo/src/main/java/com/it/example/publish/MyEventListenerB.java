@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class MyEventListenerB {
 
 	@EventListener
-	public void otherEvent(MyEvent event) {
+	public void myEvent(MyEvent event) {
 		System.out.println("添加注解订阅事件：" + event.getSource());
 	}
 

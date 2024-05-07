@@ -16,10 +16,11 @@ dependencies {
     optional("org.junit.jupiter:junit-jupiter-api")
     // 引入javaEE相关，jsr注解引入如@Named
     optional("jakarta.inject:jakarta.inject-api:2.0.0")
-    api(project(":spring-aspects"))
-    api(project(":spring-context"))
     api(project(":spring-aop"))
+    api(project(":spring-aspects"))
     api(project(":spring-beans"))
+    api(project(":spring-context"))
+    api(project(":spring-expression"))
     api(project(":spring-test"))
 }
 

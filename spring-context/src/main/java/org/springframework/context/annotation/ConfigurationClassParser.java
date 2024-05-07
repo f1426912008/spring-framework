@@ -217,6 +217,7 @@ class ConfigurationClassParser {
 	}
 
 	protected void processConfigurationClass(ConfigurationClass configClass, Predicate<String> filter) throws IOException {
+		// 条件注解判断是否跳过解析
 		if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
 			return;
 		}
@@ -228,6 +229,7 @@ class ConfigurationClassParser {
 					existingClass.mergeImportedBy(configClass);
 				}
 				// Otherwise ignore new imported config class; existing non-imported class overrides it.
+				// 否则忽略新导入的配置类; 现有的非导入类将覆盖它。
 				return;
 			}
 			else {
@@ -239,8 +241,10 @@ class ConfigurationClassParser {
 		}
 
 		// Recursively process the configuration class and its superclass hierarchy.
+		// 递归处理配置类，及其父类层次结构。
 		SourceClass sourceClass = asSourceClass(configClass, filter);
 		do {
+			// * 真正解析处理配置类，包含引入的配置类、引入的配置文件、Bean等
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter);
 		}
 		while (sourceClass != null);
@@ -249,6 +253,7 @@ class ConfigurationClassParser {
 	}
 
 	/**
+	 * 解析处理配置类，包含引入的配置类、引入的配置文件、Bean等
 	 * Apply processing and build a complete {@link ConfigurationClass} by reading the
 	 * annotations, members and methods from the source class. This method can be called
 	 * multiple times as relevant sources are discovered.
@@ -261,12 +266,14 @@ class ConfigurationClassParser {
 			ConfigurationClass configClass, SourceClass sourceClass, Predicate<String> filter)
 			throws IOException {
 
+		// 1.递归处理任何成员 (嵌套) 类
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
 			processMemberClasses(configClass, sourceClass, filter);
 		}
 
 		// Process any @PropertySource annotations
+		// 2.处理任何 @PropertySource
 		for (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), PropertySources.class,
 				org.springframework.context.annotation.PropertySource.class)) {
@@ -280,6 +287,7 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @ComponentScan annotations
+		// 3.处理任何 @ComponentScan，扫描包内的所有类
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
 		if (!componentScans.isEmpty() &&
@@ -302,9 +310,11 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @Import annotations
+		// 4.处理任何 @Import，可以引用其他包内的配置类
 		processImports(configClass, sourceClass, getImports(sourceClass), filter, true);
 
 		// Process any @ImportResource annotations
+		// 5.处理任何 @ImportResource，引用资源配置文件，按文件的路径引入
 		AnnotationAttributes importResource =
 				AnnotationConfigUtils.attributesFor(sourceClass.getMetadata(), ImportResource.class);
 		if (importResource != null) {
@@ -317,15 +327,18 @@ class ConfigurationClassParser {
 		}
 
 		// Process individual @Bean methods
+		// 6.处理任何 @Bean的方法，将其返回值加入到Spring容器的单例对象
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
 		for (MethodMetadata methodMetadata : beanMethods) {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 		}
 
 		// Process default methods on interfaces
+		// 7.处理接口上的默认方法
 		processInterfaces(configClass, sourceClass);
 
 		// Process superclass, if any
+		// 8.处理父类的方法 (如果有)
 		if (sourceClass.getMetadata().hasSuperClass()) {
 			String superclass = sourceClass.getMetadata().getSuperClassName();
 			if (superclass != null && !superclass.startsWith("java") &&

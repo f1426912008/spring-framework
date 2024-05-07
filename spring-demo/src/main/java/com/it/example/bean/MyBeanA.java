@@ -14,8 +14,11 @@ import org.springframework.stereotype.Component;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)        // 原型/单例
 public class MyBeanA implements InitializingBean, DisposableBean {
 
-	@Autowired
+	@Autowired(required = false)
 	private User user;
+
+	@Autowired(required = false)
+	private Student student;
 
 	@Override
 	public void destroy() throws Exception {
@@ -32,6 +35,7 @@ public class MyBeanA implements InitializingBean, DisposableBean {
 	public String toString() {
 		return "MyBeanA{" +
 				"user=" + user +
+				", student=" + student +
 				'}';
 	}
 }

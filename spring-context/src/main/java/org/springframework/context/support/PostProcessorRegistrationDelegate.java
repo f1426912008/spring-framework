@@ -95,6 +95,7 @@ final class PostProcessorRegistrationDelegate {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor registryProcessor) {
 					// 执行bean定义注册的后置处理器方法，此方法是比上述的 postProcessBeanFactory() 更为早期的扩展点
 					// 获取到Bean定义的注册器，可以在这里注册自己的 Bean定义
+					// 例如：处理 @Configuration 配置类
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
 					registryProcessors.add(registryProcessor);
 				}
@@ -385,6 +386,7 @@ final class PostProcessorRegistrationDelegate {
 					.tag("postProcessor", postProcessor::toString);
 			// 此方法是比上述的 postProcessBeanFactory() 更为早期的扩展点
 			// 获取到Bean定义的注册器，可以在这里注册自己的 Bean定义
+			// 例如：处理 @Configuration 配置类
 			postProcessor.postProcessBeanDefinitionRegistry(registry);
 			postProcessBeanDefRegistry.end();
 		}
@@ -400,6 +402,7 @@ final class PostProcessorRegistrationDelegate {
 			StartupStep postProcessBeanFactory = beanFactory.getApplicationStartup().start("spring.context.bean-factory.post-process")
 					.tag("postProcessor", postProcessor::toString);
 			// 调用后置处理器的方法，获取到 Bean工厂类，修改容器中的配置/Bean定义
+			// 例如：@Configuration 配置类的解析在这里完成
 			postProcessor.postProcessBeanFactory(beanFactory);
 			postProcessBeanFactory.end();
 		}

@@ -3,6 +3,7 @@ package com.it.example.test;
 import com.it.example.bean.MyBeanA;
 import com.it.example.bean.Student;
 import com.it.example.bean.User;
+import com.it.example.config.MyDbConfig;
 import com.it.example.publish.MyEvent;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -74,6 +75,25 @@ public class MyTest {
 				new AnnotationConfigApplicationContext("com.it.example.processor", "com.it.example.config");
 
 		applicationContext.getBean(User.class);
+
+		applicationContext.close();
+	}
+
+	@Test
+	public void test6() {
+		AnnotationConfigApplicationContext applicationContext =
+				new AnnotationConfigApplicationContext(MyDbConfig.class);
+
+		MyDbConfig config = applicationContext.getBean(MyDbConfig.class);
+		System.out.println(config);
+
+		// 使用 @ImportResource("classpath:spring-demo.xml")，引入的Bean
+		Student student = applicationContext.getBean(Student.class);
+		System.out.println(student);
+
+		// 使用 @Import(MyBeanA.class)，引入的Bean
+		MyBeanA bean = applicationContext.getBean(MyBeanA.class);
+		System.out.println(bean);
 
 		applicationContext.close();
 	}
