@@ -20,8 +20,6 @@ dependencies {
     api(project(":spring-aspects"))
     api(project(":spring-beans"))
     api(project(":spring-context"))
-    api(project(":spring-expression"))
-    api(project(":spring-test"))
 }
 
 test {
