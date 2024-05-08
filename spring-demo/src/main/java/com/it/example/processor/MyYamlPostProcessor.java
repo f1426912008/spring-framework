@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 import java.util.Properties;
 
 @Component
-public class YamlPostProcessor implements BeanFactoryPostProcessor {
+public class MyYamlPostProcessor implements BeanFactoryPostProcessor {
 
-	private static final Log log = LogFactory.getLog(YamlPostProcessor.class);
+	private static final Log log = LogFactory.getLog(MyYamlPostProcessor.class);
 
 	/**
 	 * spring无法解析 yml 文件，通过此类实现扫描 classpath 目录下的全部 yml

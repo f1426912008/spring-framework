@@ -5,5 +5,5 @@ import org.springframework.context.annotation.Configuration;
 
 @ComponentScan("com.it.example.processor")
 @Configuration
-public class PostProcessorConfig {
+public class MyPostProcessorConfig {
 }
