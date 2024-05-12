@@ -144,7 +144,9 @@ class ConfigurationClassBeanDefinitionReader {
 			loadBeanDefinitionsForBeanMethod(beanMethod);
 		}
 
+		// 加载注册 Bean定义，从引入的资源文件进行注册，支持.groovy、XML两种类型的文件
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
+		// 加载注册 Bean定义，从 ImportBeanDefinitionRegistrar接口的子类进行注册
 		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
 	}
 
@@ -370,6 +372,9 @@ class ConfigurationClassBeanDefinitionReader {
 		});
 	}
 
+	/**
+	 * 加载注册 Bean定义，从 ImportBeanDefinitionRegistrar接口的子类进行注册
+	 */
 	private void loadBeanDefinitionsFromRegistrars(Map<ImportBeanDefinitionRegistrar, AnnotationMetadata> registrars) {
 		registrars.forEach((registrar, metadata) ->
 				registrar.registerBeanDefinitions(metadata, this.registry, this.importBeanNameGenerator));
