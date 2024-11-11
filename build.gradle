@@ -90,6 +90,10 @@ configure([rootProject] + javaProjects) { project ->
 		maxHeapSize = "1g"
 	}
 
+	tasks.withType(Jar) {
+		duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	}
+
 	dependencies {
 		dependencyManagement(enforcedPlatform(dependencies.project(path: ":framework-platform")))
 		testImplementation("org.junit.jupiter:junit-jupiter-api")
